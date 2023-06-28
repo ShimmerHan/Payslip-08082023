@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+    <meta http-equiv="PRAGMA" content="NO-CACHE" />
+    <meta http-equiv="EXPIRES" content="Mon, 26 Jul 1997 05:00:00 GMT" />
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/kendo.all.min.js" type="text/javascript"></script>
+    <script src="js/base.js" type="text/javascript"></script>
+    <link href="styles/kendo.common.min.css" rel="stylesheet" type="text/css" />
+    <link href="styles/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery.rcrumbs.js" type="text/javascript"></script>
+	<link href="styles/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="js/bootstrap.js" type="text/javascript"></script>
+    <link href="styles/font-awesome.min.css" rel="stylesheet" type="text/css" /> 
+    <link href="styles/kendo.material.min.css" rel="stylesheet" type="text/css" />
+    <script src="js/loadingoverlay.min.js" type="text/javascript"></script>
+    
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="wrapper" style="width:100%;position: relative; border-top:1px solid black">
+    <h3 style="margin-left:5px"><b>My e-Letter</b></h3>       
+    <div style="padding:10px;display:inline-block; border:solid; border-width:1px; border-color:lightgray; background-color:lightblue; width:100%">
+        <label>FROM:</label>
+        <input style='width:200px' id='start' />
+
+        <label>TO:</label>
+        <input style='width:200px' id='end' />
+
+        <button class='k-button' id='btnsearch'><i class="fa fa-search"></i> Search</button>
+        <button class='k-button' id='btnreset'><i class="fa fa-undo"></i> Reset</button>
+
+        <button class='k-button' style='float:right' id="btndownloadBatch">Download <i class='fa fa-download click'></i> (<span id="spSelected">0</span>) files</button>
+    </div>
+    <div id="grid" style="height:auto"></div>
+</div>
+    <script type="text/javascript">
+
+        var d = new Date();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        var year = d.getFullYear();
+        var realDate = day + '/' + month + '/' + year;
+        var globalFiles = 0;
+        //        var dataSource = [
+        //        { "docdate": realDate, "docname": "EA- 2018"},
+        //        { "docdate": "28/2/2018", "docname": "EA- 2017"},
+        //        { "docdate": "28/1/2018", "docname": "EA- 2016"},
+        //        { "docdate": "28/12/2017", "docname": "EA- 2015"},
+        //        { "docdate": "28/11/2017", "docname": "EA- 2014"},
+        //        { "docdate": "28/10/2017", "docname": "EA- 2013"},
+        //        { "docdate": "28/9/2017", "docname": "EA- 2012"},
+        //        { "docdate": "28/8/2017", "docname": "EA- 2011"},
+        //        { "docdate": "28/7/2017", "docname": "EA- 2010"},
+        //        { "docdate": "28/6/2017", "docname": "EA- 2009"},
+        //        { "docdate": "28/5/2017", "docname": "EA- 2008"},
+        //        { "docdate": "28/4/2017", "docname": "EA- 2007"},
+        //        { "docdate": "28/3/2017", "docname": "EA- 2006"},
+        //        ];
+        $(document).ready(function () {
+
+            $('#start').kendoDatePicker({
+                disableDates: function (date) {
+                    return date > new Date();
+                },
+
+                // defines the start view
+                start: "year",
+
+                // defines when the calendar should return date
+                depth: "year",
+
+                // display month and year in the input
+                format: "yyyy/MM"
+            });
+
+            $('#end').kendoDatePicker({
+                disableDates: function (date) {
+                    return date > new Date();
+                },
+
+                // defines the start view
+                start: "year",
+
+                // defines when the calendar should return date
+                depth: "year",
+
+                // display month and year in the input
+                format: "yyyy/MM"
+            });
+
+
+            var form = "ELetter_form";
+            $.post("svrPayroll.aspx?q=columnReady&form=" + form, function (item) {
+                item = jQuery.parseJSON(item);
+                var Header = fnGetColumnHeader(item);
+                if (item.status == 1) {
+                    $("#grid").kendoGrid({
+                        columns: Header,
+                        height: 430,
+                        scrollable: true,
+                        sortable: {
+                            mode: "single",
+                            allowUnsort: true
+                        },
+                        noRecords: true,
+                        messages: {
+                            noRecords: "There is no data on current page"
+                        }
+                    }).data("KendoGrid");
+
+                    var grid = $('#grid').data('kendoGrid');
+                    var dataSource = new kendo.data.DataSource({
+                        data: item.obj.Rows
+                    });
+                    grid.setDataSource(dataSource);
+
+                    grid.table.on("click", ".checkbox", selectRow);
+
+                } else {
+                    $('<div />').kendoWindow({ title: "Message", resizable: false, modal: true, width: 500, draggable: false, actions: ["close"],
+                        close: function () {
+                            this.destroy();
+                        }
+                    }).data('kendoWindow').content(item.message).center().open();
+                }
+
+            });
+
+
+            $("#btndownloadBatch").bind("click", function () {
+                try {
+                    var checked = [];
+                    for (var i in checkedIds) {
+                        if (checkedIds[i]) {
+                            checked.push(i);
+                        }
+                    }
+                    for (itm in checked) {
+                        var input = checked[itm];
+                        var iframe = document.getElementById("hdDLFrame" + itm);
+                        if (iframe === null) {
+                            iframe = document.createElement('iframe');
+                            iframe.id = "hdDLFrame" + itm;
+                            iframe.style.visibility = 'hidden';
+                            document.body.appendChild(iframe);
+                        }
+                        iframe.src = 'svrPayroll.aspx?q=fnGetImage&objid=' + input + '&type=btnDownload';
+                        $('#hdDLFrame' + itm).hide();
+                    }
+                }
+                catch (e) {
+                    $('<div />').kendoWindow({
+                        title: "Message",
+                        resizable: false,
+                        modal: true,
+                        width: 500,
+                        draggable: false,
+                        actions: ["close"],
+                        close: function () {
+                            this.destroy();
+                        }
+                    }).data('kendoWindow').content(e).center().open();
+                }
+            });
+
+        });       //end document ready
+
+
+
+
+
+        var checkedIds = {};
+        function selectRow() {
+            var checked = this.checked,
+            row = $(this).closest("tr"),
+            grid = $("#grid").data("kendoGrid"),
+            dataItem = grid.dataItem(row);
+
+            checkedIds[dataItem.d_download] = checked;
+            if (checked) {
+                //-select the row
+                row.addClass("k-state-selected");
+                globalFiles++;
+                $('#spSelected').text(globalFiles);
+            } else {
+                //-remove selection
+                row.removeClass("k-state-selected");
+                if (globalFiles == 0) {
+                    $('#spSelected').text(globalFiles);
+                } else {
+                    globalFiles--;
+                    $('#spSelected').text(globalFiles);
+                }
+            }
+        }
+
+        function fnGetColumnHeader(data) {
+            var dataHeader = data.obj.Header;
+            var objID = data.obj.ListDoc; //this document ID
+            var columnsHeader = [];
+
+            columnsHeader.push({
+                title: "Select",
+                template: "<center><input type='checkbox' class='checkbox'></input></center>",
+                width: 35
+            });
+
+            for (itm in dataHeader) {
+                var title = dataHeader[itm].title;
+                if (title == "View") {
+                    columnsHeader.push({
+                        field: dataHeader[itm].field,
+                        title: dataHeader[itm].title,
+                        template: "<center><div class='btnView' onclick='btnDownload(this)'; style='background-color:transparent;border:none;cursor: pointer;'><i class='fa fa-eye click'></i><input type='hidden' name='hdObjID' value=#:" + dataHeader[itm].field + "# /></div></center>",
+                        width: dataHeader[itm].width
+                    });
+                }
+                else if (title == "File Name") {
+                    columnsHeader.push({
+                        field: dataHeader[itm].field,
+                        title: dataHeader[itm].title,
+                        width: dataHeader[itm].width,
+                        template: '<div><img src="icon/pdf.png"></img>  #:' + dataHeader[itm].field + '#</div>'
+                    });
+                }
+                else if (title == "Download") {
+                    columnsHeader.push({
+                        field: dataHeader[itm].field,
+                        title: dataHeader[itm].title,
+                        width: dataHeader[itm].width,
+                        template: '<center><div class="btnDownload" onclick="btnDownload(this)" style="background-color:transparent;border:none;cursor: pointer;"><i class="fa fa-download click"></i><input type="hidden" name="hdObjID" value=#:' + dataHeader[itm].field + '# /> </div></center>'
+                    });
+                }
+                else {
+                    columnsHeader.push({
+                        field: dataHeader[itm].field,
+                        title: dataHeader[itm].title,
+                        width: dataHeader[itm].width
+                    });
+                }
+            }
+            return columnsHeader;
+        }
+
+
+        function btnDownload(img) {
+            var type = $(img).prop('class');
+            var input = $(img).find($('input[name="hdObjID"]'));
+            if (type === "btnDownload") {
+                var iframe = document.getElementById("hdDLFrame");
+                if (iframe === null) {
+                    iframe = document.createElement('iframe');
+                    iframe.id = "hdDLFrame";
+                    iframe.style.visibility = 'hidden';
+                    document.body.appendChild(iframe);
+                }
+                iframe.src = 'svrPayroll.aspx?q=fnGetImage&objid=' + input.val() + '&type=' + type;
+
+                $('#hdDLFrame').hide();
+            }
+            else if (type === "btnView") {
+                window.open('svrPayroll.aspx?q=fnGetImage&type=' + type + '&objid=' + input.val());
+            }
+        }
+
+
+        function getChecked(chkbox) {
+            if (chkbox.checked) {
+                globalFiles++;
+                $('#spSelected').text(globalFiles);
+            } else {
+                if (globalFiles == 0) {
+                    $('#spSelected').text(globalFiles);
+                } else {
+                    globalFiles--;
+                    $('#spSelected').text(globalFiles);
+                }
+            }
+        }
+
+
+        $("#btnreset").click(function (e) {
+            var grid = $('#grid').data('kendoGrid');
+            grid.dataSource.filter([]);
+            $("#start").val("");
+            $("#end").val("");
+        });
+
+        $("#btnsearch").click(function (e) {
+            var start = $("#start");
+            var end = $("#end");
+            if (start.val() && end.val() && start.val() > end.val()) {
+                $('<div />').kendoWindow({
+                    title: "Message",
+                    resizable: false,
+                    modal: true,
+                    width: 500,
+                    draggable: false,
+                    actions: ["close"],
+                    close: function () {
+                        this.destroy();
+                    }
+                }).data('kendoWindow').content("Second date (To) must be after the first one (From).").center().open();
+
+            } else {
+                var start = $("#start").val();
+                var sMonth = start.substring(0, 2);
+                var sYear = start.substring(3, 7);
+                var myStart = sYear + "\\" + sMonth;
+
+                var end = $("#end").val();
+                var eMonth = end.substring(0, 2);
+                var eYear = end.substring(3, 7);
+                var myEnd = eYear + "\\" + eMonth;
+
+                if (start != "" && end != "") {
+                    var filter = [{ field: "d_pay_period", operator: "gte", value: start },
+                                  { field: "d_pay_period", operator: "lte", value: end}];
+
+                    var grid = $('#grid').data('kendoGrid');
+                    grid.dataSource.filter(filter);
+
+                } else if (start != "" && end == "") {
+                    var filter = [{ field: "d_pay_period", operator: "gte", value: start}];
+
+                    var grid = $('#grid').data('kendoGrid');
+                    grid.dataSource.filter(filter);
+                } else if (start == "" && end != "") {
+                    var filter = [{ field: "d_pay_period", operator: "lte", value: end}];
+
+                    var grid = $('#grid').data('kendoGrid');
+                    grid.dataSource.filter(filter);
+                } else {
+                    var grid = $('#grid').data('kendoGrid');
+                    grid.dataSource.filter([]);
+                }
+            }
+        });
+
+
+
+        function getMasterColumnsWidth(tbl) {
+            var result = 0;
+            tbl.children("colgroup").find("col").not(":last").each(function (idx, element) {
+                result += parseInt($(element).outerWidth() || 0, 10);
+            });
+
+            return result;
+        }
+
+        function adjustLastColumn() {
+            window.setTimeout(function () {
+                if ($("#grid").data("kendoGrid").dataSource.data().length !== 0) {
+                    var grid = $("#grid").data("kendoGrid"),
+                        contentDiv = grid.wrapper.children(".k-grid-content"),
+                        masterHeaderTable = grid.thead.parent(),
+                        masterBodyTable = contentDiv.children("table"),
+                        gridDivWidth = contentDiv.width() - kendo.support.scrollbar();
+                    masterHeaderTable.width("");
+                    masterBodyTable.width("");
+                    var headerWidth = getMasterColumnsWidth(masterHeaderTable),
+                            lastHeaderColElement = grid.thead.parent().find("col").last(),
+                            lastDataColElement = grid.tbody.parent().children("colgroup").find("col").last(),
+                            delta = parseInt(headerWidth, 10) - parseInt(gridDivWidth, 10);
+
+                    if (delta > 0) {
+                        delta = Math.abs(delta);
+                        lastHeaderColElement.width(delta);
+                        lastDataColElement.width(delta);
+                    }
+
+                    contentDiv.scrollLeft(contentDiv.scrollLeft() - 1);
+                    contentDiv.scrollLeft(contentDiv.scrollLeft() + 1);
+                }
+            }, 1);
+        }
+
+
+
+    </script>
+
+</body>
+</html>

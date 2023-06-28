@@ -1,0 +1,44 @@
+﻿   html, body
+        {
+            font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+            font-size: 14px;
+        }
+ 
+  .container
+       {
+           border: 1px;
+           border-color: Black;
+           width: 99.8%;
+           border: 0px solid gray;
+       }
+       
+  .container-header
+       {
+           background-color: #337ab7;
+           color: White;
+           width: 100%;
+       }
+       
+  .k-upload
+       {
+           background-color: #E6E6FA;
+           border-color:#C0C0C0;
+           min-height: 50px;
+       }
+       
+  .k-file
+       {
+           height: 25px !important;
+           font-size:13px;
+           color: Green;
+       }
+       
+  .k-file-extension-wrapper
+       {
+           height: 24px;
+       }
+       
+  .k-file-name
+       {
+           line-height: 3;
+       }

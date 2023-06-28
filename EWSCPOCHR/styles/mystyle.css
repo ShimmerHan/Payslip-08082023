@@ -1,0 +1,381 @@
+﻿.k-textbox, .k-dropdown, .k-button {border: 1px solid #c0c0c0 !important;}
+
+.custom-dropdown .k-item{ border-bottom: 1px solid #c0c0c0 !important; }
+
+#sltVerify-list {width: auto !important; min-width: 150px !important;}
+
+.k-listview .k-state-selected
+{
+    background: #9ae7ea;
+    color: #000;
+}
+
+.bs-callout 
+{
+    margin: 0px 0px;    
+    border-left-width: 1px;
+    box-sizing: border-box;
+}
+
+.k-dropdown .k-popup{
+    height: 47px;
+}
+
+#listview .k-list .k-item .k-state-selected 
+{
+    border: none;
+}
+
+body
+{
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 11pt;
+    background: #fff;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.stages li span
+{ 
+    padding-left: 20px;
+}
+
+a:hover, .label:hover, .task:hover, #btnDownloadAll:hover, .overlay-button:hover, #btnNew, #btnSearch, div#panes li.k-item.k-state-default:hover, .currentStage:hover, .stages li.done span:hover, .stages li.active span:hover
+{
+    cursor: pointer;
+}
+
+.view
+{
+    display: inline-block;
+}
+
+#listview p
+{
+    margin: 0;
+}
+
+.red
+{
+    width: 120px;
+}
+
+#listview .k-alt .k-state-selected td
+{
+    padding: 0 !important;
+}
+
+#listview .k-block
+{
+    background: #f3f3f3 !important;
+}
+
+.k-treelist .k-grid-header
+{
+    display:none;
+}
+
+.k-tabstrip-wrapper .k-header
+{
+    background: #363940 !important;
+}
+
+.span
+{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: inherit;
+    display: block;
+    overflow: hidden;
+    margin-bottom: 0px;
+}
+
+.span:before
+{
+    content: '';
+ /* IE9 ellipsis fix */
+}
+
+#files
+{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: none;
+    overflow: auto;
+    padding: 5px;
+    max-height: 80%;
+}
+
+.k-tooltip
+{
+    color: #000 !important;
+    background: #fff !important;
+    border: 1px solid black !important;
+}
+
+.action
+{
+    margin-right: 8px;
+    width: 150px;
+}
+
+/* apply a natural box layout model to all elements, but allowing components to change */
+html
+{
+    box-sizing: border-box;
+}
+
+*, *:before, *:after
+{
+    box-sizing: inherit;
+}
+
+.info
+{
+    padding: 4px;
+    /*background: #effaff;*/
+}
+
+:focus
+{
+    outline: 0;
+}
+
+
+div.attachment.k-state-selected
+{
+  background: #f5f5f5;
+  border: 1px solid rgb(229, 229, 229);
+}
+
+.attachment
+{
+    width: 160px;
+    height: 70px;
+    position: relative;
+    display: inline-block;
+    margin: 6px 0 6px 6px;
+    border: 1px solid rgb(229, 229, 229);
+    background: #f5f5f5;
+}
+
+.fa-file-pdf-o
+{
+    color: Red;
+}
+
+.filename, #spStage
+{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: inherit;
+    display: block;
+    overflow: hidden;
+    color: #77778A;
+}
+.filename:before, #spStage:before
+{
+    content: '';
+ /* IE9 ellipsis fix */
+}
+
+.image-info
+{
+    height: 19px; 
+    background: rgb(245, 245, 245); 
+    padding: 8px 0 0 8px;
+    border-top: 1px solid rgb(229, 229, 229);
+}
+
+.overlay-info
+{
+    padding: 8px 0 0 8px;
+    color: #77778A;
+    height: 50%;
+}
+
+.overlay-button
+{
+    padding: 0 0 0 8px;
+    height: 19%;
+    margin-left: 20px;
+}
+
+.overlay-button div
+{
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    background: #5b5b5b;
+    padding: 5px;
+    margin: 0 auto;
+    display: inline-block;
+    margin-right: 5px;
+    color: #fff;
+    text-align: center;
+}
+
+.overlay-button div:hover
+{
+  background: #848484;
+}
+
+.overlay{
+ height:85px;
+ width:130px;
+    background: #f5f5f5;
+display:none;
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+
+.attachment:hover .overlay {
+    display:block;
+    opacity:1;
+}
+
+.btnAction span
+{
+    width: 150px;
+    display: inline-block;
+    margin-right: 0;
+}
+
+
+
+ul.stages li {
+    background-color: #d2d2d2;
+}
+
+ul.stages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.stages li {
+    float: left;
+    line-height: 50px;
+    height: 50px;
+    width: 160px;
+    position: relative;
+    
+}
+
+ul.stages li:after {
+	content: '';
+    position: absolute;
+	width: 0;
+	height: 0;
+    right: 5px;
+    border-style: solid;
+    border-width: 25px 0 25px 25px;
+    border-color: transparent transparent transparent #d2d2d2;
+}
+
+ul.stages li:before {
+	content: '';
+    position: absolute;
+	width: 0;
+	height: 0;
+    right: 0px;
+    border-style: solid;
+    border-width: 25px 0 25px 25px;
+    border-color: transparent transparent transparent #fff;
+}
+
+ul.stages li.beforeactive:before {
+    background-color: #FFAF0A; 
+}
+
+ul.stages li.active {
+    background-color: #FFAF0A;
+}
+
+ul.stages li.active:before {
+    background-color: #d2d2d2;
+}
+
+ul.stages li.active:after {
+    border-color: transparent transparent transparent #FFAF0A;
+}
+
+ul.stages li.done{
+  background-color: #00bb00;
+}
+ul.stages li.done:before {
+    background-color: #00bb00;
+}
+ul.stages li.done:after {
+    border-color: transparent transparent transparent #00bb00;
+}
+
+ul.stages li:last-child:after,
+ul.stages li:last-child:before {
+    border: 0;
+}
+
+ul.progress li span {
+    padding: 0px 0px 0px 36px;
+    color: #FFF;
+    text-decoration: none;
+}
+
+div#panes li.k-item.k-state-default  {
+    background-color:#13777c !important;
+    color: #fff !important;
+   width: 200px;
+	font-weight: bold;
+}
+
+#panes .k-item .k-link
+{
+	color: #fff;
+}
+
+#panes .k-state-active .k-link
+{
+	color: #13777c;
+}
+
+/* #panes .k-tabstrip-items
+{
+	background: #13777c;
+} */
+
+div#panes li.k-item.k-state-default.k-tab-on-top.k-state-active {
+    background-color:#fff !important;
+	color: #13777c !important;
+	font-weight: bold;
+}
+
+.k-tabstrip > .k-content, .k-panelbar .k-tabstrip > .k-content{
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.k-tabstrip > .k-content {
+    height: 270px;
+}
+
+.badge
+{
+	background-color: red !important;
+}
+
+.tbInfo tr:nth-child(odd) , .tbMDInfo tr:nth-child(odd)
+{
+    background: #fcfcfc;
+    line-height: 18px;
+}
+.tbInfo tr:nth-child(even) ,.tbMDInfo tr:nth-child(even)
+{
+    background: #ccffff;
+    line-height: 18px;
+}
+
+.tbInfo td, .tbAttachInfo td , .tbMDInfo td
+{
+    padding: 5px;
+}
